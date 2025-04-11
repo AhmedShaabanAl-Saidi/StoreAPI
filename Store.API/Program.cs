@@ -1,4 +1,5 @@
 
+using System.Threading.Tasks;
 using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -8,7 +9,7 @@ namespace Store.API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -28,7 +29,7 @@ namespace Store.API
 
             var app = builder.Build();
 
-            SeedDb(app);
+            await SeedDbAsync(app);
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -47,13 +48,14 @@ namespace Store.API
             app.Run();
         }
 
-        static void SeedDb(WebApplication app)
+        // SeedDb
+        static async Task SeedDbAsync(WebApplication app)
         {
             using var scope = app.Services.CreateScope();
 
             var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
 
-            dbInitializer.Initialize();
+            await dbInitializer.InitializeAsync();
         }
     }
 }

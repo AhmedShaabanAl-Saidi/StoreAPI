@@ -14,7 +14,7 @@ namespace Persistence
         {
             _context = context;
         }
-        public void Initialize()
+        public async Task InitializeAsync()
         {
             try
             {
@@ -29,8 +29,8 @@ namespace Persistence
 
                     if (types is not null && types.Any())
                     {
-                        _context.ProductTypes.AddRange(types);
-                        _context.SaveChanges();
+                        await _context.ProductTypes.AddRangeAsync(types);
+                        await _context.SaveChangesAsync();
                     }
                 }
 
@@ -42,8 +42,8 @@ namespace Persistence
 
                     if (brands is not null && brands.Any())
                     {
-                        _context.ProductBrands.AddRange(brands);
-                        _context.SaveChanges();
+                        await _context.ProductBrands.AddRangeAsync(brands);
+                        await _context.SaveChangesAsync();
                     }
                 }
 
@@ -55,8 +55,8 @@ namespace Persistence
 
                     if (products is not null && products.Any())
                     {
-                        _context.Products.AddRange(products);
-                        _context.SaveChanges();
+                        await _context.Products.AddRangeAsync(products);
+                        await _context.SaveChangesAsync();
                     }
                 }
             }
