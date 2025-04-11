@@ -1,5 +1,3 @@
-
-using System.Threading.Tasks;
 using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -22,6 +20,7 @@ namespace Store.API
             });
 
             builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
