@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using Persistence.Data;
+
 namespace Store.API
 {
     public class Program
@@ -10,6 +13,10 @@ namespace Store.API
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddDbContext<StoreDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
+            });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
