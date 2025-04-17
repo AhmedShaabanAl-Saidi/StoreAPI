@@ -34,5 +34,14 @@ namespace Persistence.Repositories
 
         public void Update(TEntity entity)
         => _context.Set<TEntity>().Update(entity);
+
+        public async Task<TEntity?> GetAsync(Specification<TEntity> specification)
+            => await ApplySpecification(specification).FirstOrDefaultAsync();
+
+        public async Task<IEnumerable<TEntity>> GetAllAsync(Specification<TEntity> specification)
+            => await ApplySpecification(specification).ToListAsync();
+
+        private IQueryable<TEntity> ApplySpecification(Specification<TEntity> specification)
+            => SpecificationEvaluater.GetQuery(_context.Set<TEntity>(), specification);
     }
 }
