@@ -5,6 +5,7 @@ using Persistence;
 using Persistence.Data;
 using Services;
 using Services.Abstractions;
+using Services.MappingProfiles;
 
 namespace Store.API
 {
@@ -24,7 +25,7 @@ namespace Store.API
 
             builder.Services.AddScoped<IDbInitializer, DbInitializer>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddAutoMapper(typeof(AssemblyReference).Assembly);
+            builder.Services.AddAutoMapper(typeof(Services.ServiceManager).Assembly);
             builder.Services.AddScoped<IServiceManager, ServiceManager>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -42,10 +43,11 @@ namespace Store.API
                 app.UseSwaggerUI();
             }
 
+            app.UseStaticFiles();
+
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
