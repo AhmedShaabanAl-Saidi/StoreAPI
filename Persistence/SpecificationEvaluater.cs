@@ -19,6 +19,9 @@ namespace Persistence
             else if (specification.OrderByDescending is not null)
                 query = query.OrderByDescending(specification.OrderByDescending);
 
+            if (specification.IsPaginated)
+                query = query.Skip(specification.Skip).Take(specification.Take);
+
             return query;
         }
     }

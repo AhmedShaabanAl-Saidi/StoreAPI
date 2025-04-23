@@ -20,9 +20,14 @@ namespace Services.Specifications
                                product.Name.ToLower().Contains(specs.Search.ToLower().Trim()))
             )
         {
+            // Add Includes for related entities
             AddInclude(product => product.ProductBrand);
             AddInclude(product => product.ProductType);
 
+            // Apply pagination
+            ApplyPagination(specs.PageIndex, specs.PageSize);
+
+            // Apply sorting
             if (specs.Sort is not null)
             {
                 switch(specs.Sort)
