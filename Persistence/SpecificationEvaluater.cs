@@ -14,6 +14,11 @@ namespace Persistence
 
             query = specification.Includes.Aggregate(query, (currentQuery, include) => currentQuery.Include(include));
 
+            if (specification.OrderBy is not null)
+                query = query.OrderBy(specification.OrderBy);
+            else if (specification.OrderByDescending is not null)
+                query = query.OrderByDescending(specification.OrderByDescending);
+
             return query;
         }
     }

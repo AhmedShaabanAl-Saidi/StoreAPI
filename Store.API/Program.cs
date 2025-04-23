@@ -1,8 +1,10 @@
 using System.Reflection.Metadata;
+using System.Text.Json.Serialization;
 using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Data;
+using Persistence.Repositories;
 using Services;
 using Services.Abstractions;
 using Services.MappingProfiles;
@@ -16,6 +18,11 @@ namespace Store.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
+
 
             builder.Services.AddControllers();
             builder.Services.AddDbContext<StoreDbContext>(options =>

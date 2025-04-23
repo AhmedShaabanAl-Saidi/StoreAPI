@@ -2,9 +2,8 @@
 using Domain.Contracts;
 using Domain.Entities;
 using Persistence.Data;
-using Persistence.Repositories;
 
-namespace Persistence
+namespace Persistence.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
