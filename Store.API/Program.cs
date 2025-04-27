@@ -8,6 +8,7 @@ using Persistence.Repositories;
 using Services;
 using Services.Abstractions;
 using Services.MappingProfiles;
+using Store.API.Middlewares;
 
 namespace Store.API
 {
@@ -42,6 +43,8 @@ namespace Store.API
             var app = builder.Build();
 
             await SeedDbAsync(app);
+
+            app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

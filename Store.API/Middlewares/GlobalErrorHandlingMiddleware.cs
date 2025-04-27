@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Domain.Exceptions;
 using Shared.ErrorModels;
 
 namespace Store.API.Middlewares
@@ -29,14 +30,20 @@ namespace Store.API.Middlewares
 
         private async Task HandleExeption(HttpContext httpContext,Exception ex)
         {
-            httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             httpContext.Response.ContentType = "application/json";
+
+            httpContext.Response.StatusCode = ex switch
+            {
+                NotFoundExecption => (int)HttpStatusCode.NotFound,
+                _ => (int)HttpStatusCode.InternalServerError
+            };
+
             var response = new ErrorDetails
             {
                 ErrorMessage = ex.Message,
+                StatusCode = httpContext.Response.StatusCode
             };
 
-            response.StatusCode = httpContext.Response.StatusCode;
             await httpContext.Response.WriteAsync(response.ToString());
         }
     }
