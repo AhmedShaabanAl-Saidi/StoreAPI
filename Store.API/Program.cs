@@ -9,6 +9,7 @@ using Persistence.Repositories;
 using Services;
 using Services.Abstractions;
 using Services.MappingProfiles;
+using StackExchange.Redis;
 using Store.API.Factories;
 using Store.API.Middlewares;
 
@@ -33,10 +34,15 @@ namespace Store.API
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
             });
 
+            builder.Services.AddSingleton<IConnectionMultiplexer>(
+                _=> ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis"))
+            );
+
             builder.Services.AddScoped<IDbInitializer, DbInitializer>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddAutoMapper(typeof(Services.ServiceManager).Assembly);
             builder.Services.AddScoped<IServiceManager, ServiceManager>();
+            builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
             builder.Services.Configure<ApiBehaviorOptions>(options =>
             {
