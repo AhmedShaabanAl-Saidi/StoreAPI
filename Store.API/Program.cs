@@ -105,6 +105,7 @@ namespace Store.API
             var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
 
             await dbInitializer.InitializeAsync();
+            await dbInitializer.InitializeIdentityAsync();
         }
     }
 }
