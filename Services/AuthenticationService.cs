@@ -1,7 +1,11 @@
-﻿using AutoMapper;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using AutoMapper;
 using Domain.Entities.Identity;
 using Domain.Exceptions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using Services.Abstractions;
 using Shared.IdentityDtos;
 
@@ -26,7 +30,7 @@ namespace Services
             (
                 user.DisplayName,
                 user.Email!,
-                "Token"
+                await CreateTokenAsync(user)    
             );
 
         }
@@ -53,8 +57,38 @@ namespace Services
             (
                 user.DisplayName,
                 user.Email!,
-                "Token"
+                await CreateTokenAsync(user)
             );
+        }
+
+        private async Task<string> CreateTokenAsync(User user)
+        {
+            // Claims
+            var clams = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email!),
+            };
+
+            var roles = await userManager.GetRolesAsync(user);
+
+            foreach (var role in roles)
+                clams.Add(new Claim(ClaimTypes.Role, role));
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("top-secret-key"));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken
+            (
+                claims: clams,
+                signingCredentials: creds,
+                expires: DateTime.UtcNow.AddDays(1),
+                audience:"", 
+                issuer: ""
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
