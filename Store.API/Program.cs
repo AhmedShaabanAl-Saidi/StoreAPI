@@ -1,4 +1,3 @@
-using System.Reflection.Metadata;
 using System.Text.Json.Serialization;
 using Domain.Contracts;
 using Domain.Entities.Identity;
@@ -11,7 +10,7 @@ using Persistence.Identity;
 using Persistence.Repositories;
 using Services;
 using Services.Abstractions;
-using Services.MappingProfiles;
+using Shared.IdentityDtos;
 using StackExchange.Redis;
 using Store.API.Factories;
 using Store.API.Middlewares;
@@ -66,6 +65,8 @@ namespace Store.API
             {
                 options.InvalidModelStateResponseFactory = ApiResponseFactory.CustomValidtionErrorRespose;
             });
+
+            builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
