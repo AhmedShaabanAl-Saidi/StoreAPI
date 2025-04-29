@@ -1,10 +1,13 @@
 using System.Reflection.Metadata;
 using System.Text.Json.Serialization;
 using Domain.Contracts;
+using Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Data;
+using Persistence.Identity;
 using Persistence.Repositories;
 using Services;
 using Services.Abstractions;
@@ -33,6 +36,21 @@ namespace Store.API
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
             });
+
+            builder.Services.AddDbContext<StoreIdentityDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("IdentitySQLConnection"));
+            });
+
+            builder.Services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireDigit = true;
+                options.User.RequireUniqueEmail = true;
+            }).AddEntityFrameworkStores<StoreIdentityDbContext>();
 
             builder.Services.AddSingleton<IConnectionMultiplexer>(
                 _=> ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis"))
@@ -69,6 +87,8 @@ namespace Store.API
             app.UseStaticFiles();
 
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
