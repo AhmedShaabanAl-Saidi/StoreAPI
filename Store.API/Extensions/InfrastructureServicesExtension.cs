@@ -1,12 +1,16 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text;
+using System.Text.Json.Serialization;
 using Domain.Contracts;
 using Domain.Entities.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Persistence;
 using Persistence.Data;
 using Persistence.Identity;
 using Persistence.Repositories;
+using Shared.IdentityDtos;
 using StackExchange.Redis;
 
 namespace Store.API.Extensions
@@ -39,6 +43,7 @@ namespace Store.API.Extensions
            );
 
             services.ConfigureIdentity();
+            services.ConfigureJwt(configuration);
 
             return services;
         }
@@ -54,6 +59,31 @@ namespace Store.API.Extensions
                 options.Password.RequireDigit = true;
                 options.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<StoreIdentityDbContext>();
+
+            return services;
+        }
+
+        private static IServiceCollection ConfigureJwt(this IServiceCollection services,IConfiguration configuration)
+        {
+            var jwtConfig = configuration.GetSection("JwtOptions").Get<JwtOptions>();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtConfig.Issuer,
+                    ValidAudience = jwtConfig.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.SecurityKey))
+                };
+            });
 
             return services;
         }

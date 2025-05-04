@@ -78,7 +78,7 @@ namespace Services
             foreach (var role in roles)
                 clams.Add(new Claim(ClaimTypes.Role, role));
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("top-secret-key"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecurityKey));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
