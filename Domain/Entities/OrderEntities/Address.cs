@@ -1,6 +1,6 @@
-﻿namespace Shared.IdentityDtos
+﻿namespace Domain.Entities.OrderEntities
 {
-    public class AddressDto
+    public class Address
     {
         public string FristName { get; set; }
         public string LastName { get; set; }

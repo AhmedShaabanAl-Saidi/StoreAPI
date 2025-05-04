@@ -6,9 +6,9 @@ namespace Services.Abstractions
     {
         Task<UserResultDto> LoginAsync(LoginDto loginDto);
         Task<UserResultDto> RegisterAsync(RegisterDto registerDto);
-        Task<UserResultDto> GetUserByEmail(string email);
+        Task<UserResultDto> GetUserByEmailAsync(string email);
         Task<bool> IsEmailExist(string email);
-        Task<AddressDto> GetUserAddress(string email);
-        Task<AddressDto> UpdateUserAddress(string email, AddressDto addressDto);
+        Task<AddressDto> GetUserAddressAsync(string email);
+        Task<AddressDto> UpdateUserAddressAsync(string email, AddressDto addressDto);
     }
 }

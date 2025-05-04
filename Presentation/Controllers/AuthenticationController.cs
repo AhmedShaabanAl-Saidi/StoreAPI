@@ -25,7 +25,8 @@ namespace Presentation.Controllers
         public async Task<ActionResult<UserResultDto>> GetCurrentUser()
         {
             var email = User.FindFirst(ClaimTypes.Email).Value;
-            return Ok(await serviceManager.AuthenticationService.GetUserByEmail(email));
+            var result = await serviceManager.AuthenticationService.GetUserByEmailAsync(email);
+            return Ok(result);
         }
 
         [HttpGet]
@@ -33,7 +34,8 @@ namespace Presentation.Controllers
         public async Task<ActionResult<AddressDto>> GetUserAddress()
         {
             var email = User.FindFirst(ClaimTypes.Email).Value;
-            return Ok(await serviceManager.AuthenticationService.GetUserAddress(email));
+            var result = await serviceManager.AuthenticationService.GetUserAddressAsync(email);
+            return Ok(result);
         }
 
         [HttpPut]
@@ -41,7 +43,8 @@ namespace Presentation.Controllers
         public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressDto addressDto)
         {
             var email = User.FindFirst(ClaimTypes.Email).Value;
-            return Ok(await serviceManager.AuthenticationService.UpdateUserAddress(email, addressDto));
+            var result = await serviceManager.AuthenticationService.UpdateUserAddressAsync(email, addressDto);
+            return Ok(result);
         }
     }
 }

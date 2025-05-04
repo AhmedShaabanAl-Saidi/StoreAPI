@@ -97,6 +97,14 @@ namespace Persistence
                     Email = "SuperAdmin@gmail.com",
                     UserName = "Superadmin",
                     PhoneNumber = "1234567890",
+                    Address = new Address
+                    {
+                        FristName = "Super",
+                        LastName = "Admin",
+                        Street = "Super Admin Street",
+                        City = "Super Admin City",
+                        Country = "Super Admin Country",
+                    }
                 };
 
                 var adminUser = new User
@@ -105,6 +113,14 @@ namespace Persistence
                     Email = "Admin@gmail.com",
                     UserName = "Admin",
                     PhoneNumber = "124578963321",
+                    Address = new Address
+                    {
+                        FristName = "Admin",
+                        LastName = "Admin",
+                        Street = "Admin Street",
+                        City = "Admin City",
+                        Country = "Admin Country",
+                    }
                 };
 
                 await _userManager.CreateAsync(superAdminUser, "SuperAdmin123");
