@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
 using Shared.IdentityDtos;
 
@@ -6,12 +8,40 @@ namespace Presentation.Controllers
 {
     public class AuthenticationController(IServiceManager serviceManager) : ApiController
     {
-        [HttpPost("Login")]
+        [HttpPost]
         public async Task<ActionResult<UserResultDto>> Login(LoginDto loginDto)
             => Ok(await serviceManager.AuthenticationService.LoginAsync(loginDto));
 
-        [HttpPost("Register")]
+        [HttpPost]
         public async Task<ActionResult<UserResultDto>> Register(RegisterDto registerDto)
             => Ok(await serviceManager.AuthenticationService.RegisterAsync(registerDto));
+
+        [HttpGet]
+        public async Task<ActionResult<bool>> IsEmailExits(string email)
+         => Ok(await serviceManager.AuthenticationService.IsEmailExist(email));
+
+        [HttpGet]
+        [Authorize]
+        public async Task<ActionResult<UserResultDto>> GetCurrentUser()
+        {
+            var email = User.FindFirst(ClaimTypes.Email).Value;
+            return Ok(await serviceManager.AuthenticationService.GetUserByEmail(email));
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<ActionResult<AddressDto>> GetUserAddress()
+        {
+            var email = User.FindFirst(ClaimTypes.Email).Value;
+            return Ok(await serviceManager.AuthenticationService.GetUserAddress(email));
+        }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressDto addressDto)
+        {
+            var email = User.FindFirst(ClaimTypes.Email).Value;
+            return Ok(await serviceManager.AuthenticationService.UpdateUserAddress(email, addressDto));
+        }
     }
 }
