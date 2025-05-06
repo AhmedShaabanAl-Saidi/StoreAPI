@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using Azure;
 using Domain.Exceptions;
 using Shared.ErrorModels;
 

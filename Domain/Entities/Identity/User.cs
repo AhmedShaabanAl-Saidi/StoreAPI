@@ -1,5 +1,4 @@
-﻿using System.Net.Sockets;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace Domain.Entities.Identity
 {
