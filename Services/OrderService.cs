@@ -4,6 +4,7 @@ using Domain.Entities;
 using Domain.Entities.OrderEntities;
 using Domain.Exceptions;
 using Services.Abstractions;
+using Services.Specifications;
 using Shared.OrderDtos;
 
 namespace Services
@@ -57,19 +58,29 @@ namespace Services
             }
         }
 
-        public Task<IEnumerable<DeliveryMethodResult>> GetDeliveryMethodsAsync()
+        public async Task<IEnumerable<DeliveryMethodResult>> GetDeliveryMethodsAsync()
         {
-            throw new NotImplementedException();
+            var deliveryMethods = await unitOfWork.GetRepository<DeliveryMethod, int>().GetAllAsync();
+            return mapper.Map<IEnumerable<DeliveryMethodResult>>(deliveryMethods);
         }
 
-        public Task<OrderResult> GetOrderByIdAsync(Guid id)
+        public async Task<OrderResult> GetOrderByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var orderSpec = new OrderWithIncludeSpecification(id);
+            var order = await unitOfWork.GetRepository<Order, Guid>().GetAsync(orderSpec);
+
+            if (order is null)
+                throw new OrderNotFoundException(id);
+
+            return mapper.Map<OrderResult>(order);
         }
 
-        public Task<IEnumerable<OrderResult>> GetOrdersByEmailAsync(string email)
+        public async Task<IEnumerable<OrderResult>> GetOrdersByEmailAsync(string email)
         {
-            throw new NotImplementedException();
+            var orderSpec = new OrderWithIncludeSpecification(email);
+            var orders = await unitOfWork.GetRepository<Order, Guid>().GetAllAsync(orderSpec);
+
+            return mapper.Map<IEnumerable<OrderResult>>(orders);
         }
     }
 }
