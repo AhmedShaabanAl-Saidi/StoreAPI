@@ -3,7 +3,7 @@
     public class OrderResult
     {
         public Guid Id { get; set; }
-        public string UserEmail { get; set; }
+        public string BuyerEmail { get; set; }
         public AddressDto ShippingAddress { get; set; }
         public ICollection<OrderItemDto> OrderItems { get; set; } = new List<OrderItemDto>();
         public string PaymentStatus { get; set; }

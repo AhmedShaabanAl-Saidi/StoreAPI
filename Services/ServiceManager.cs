@@ -13,6 +13,7 @@ namespace Services
         private readonly Lazy<IProductService> _productService;
         private readonly Lazy<IBasketService> _basketService;
         private readonly Lazy<IAuthenticationService> _authenticationService;
+        private readonly Lazy<IOrderService> _orderService;
 
         public ServiceManager(IUnitOfWork unitOfWork,
             IMapper mapper,
@@ -28,5 +29,7 @@ namespace Services
         public IProductService ProductService => _productService.Value;
         public IBasketService BasketService => _basketService.Value;
         public IAuthenticationService AuthenticationService => _authenticationService.Value;
+
+        public IOrderService OrderService => throw new NotImplementedException();
     }
 }

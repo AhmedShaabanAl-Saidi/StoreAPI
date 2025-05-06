@@ -2,6 +2,18 @@
 {
     public class Order : BaseEntity<Guid>
     {
+        public Order()
+        {
+        }
+
+        public Order(string buyerEmail, Address shippingAddress, ICollection<OrderItem> orderItems, DeliveryMethod deliveryMethod, decimal subtotal)
+        {
+            BuyerEmail = buyerEmail;
+            ShippingAddress = shippingAddress;
+            OrderItems = orderItems;
+            DeliveryMethod = deliveryMethod;
+            Subtotal = subtotal;
+        }
         public string BuyerEmail { get; set; }
         public Address ShippingAddress { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
