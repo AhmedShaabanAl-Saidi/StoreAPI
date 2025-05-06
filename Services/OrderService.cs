@@ -24,15 +24,18 @@ namespace Services
             if (basket is null)
                 throw new BasketNotFoundException(orderRequest.BasketId);
 
+            // Check if the basket belongs to the user
             var orderRepo = unitOfWork.GetRepository<Order, Guid>();
 
             var existingOrderSpec = new OrderWithPaymentIntentIdSpecification(basket.PaymentIntentId);
 
             var existingOrder = await orderRepo.GetAsync(existingOrderSpec);
 
+            // Check if the order already exists
             if (existingOrder is not null)
                 orderRepo.Delete(existingOrder);
 
+            // Check if the basket is empty
             var orderItems = new List<OrderItem>();
 
             var productRepo = unitOfWork.GetRepository<Product, int>();
