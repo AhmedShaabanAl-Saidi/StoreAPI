@@ -22,5 +22,6 @@
         public int? DeliveryMethodId { get; set; }
         public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;
         public decimal Subtotal { get; set; }
+        public string PaymentIntentId { get; set; }
     }
 }

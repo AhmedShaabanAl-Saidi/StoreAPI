@@ -21,41 +21,52 @@ namespace Services
             // Basket
             var basket = await basketRepository.GetBasketAsync(orderRequest.BasketId);
 
-            if(basket is null)
+            if (basket is null)
                 throw new BasketNotFoundException(orderRequest.BasketId);
+
+            var orderRepo = unitOfWork.GetRepository<Order, Guid>();
+
+            var existingOrderSpec = new OrderWithPaymentIntentIdSpecification(basket.PaymentIntentId);
+
+            var existingOrder = await orderRepo.GetAsync(existingOrderSpec);
+
+            if (existingOrder is not null)
+                orderRepo.Delete(existingOrder);
 
             var orderItems = new List<OrderItem>();
 
+            var productRepo = unitOfWork.GetRepository<Product, int>();
+
             foreach (var item in basket.Items)
             {
-                var product = await unitOfWork.GetRepository<Product,int>().GetAsync(item.Id);
+                var product = await productRepo.GetAsync(item.Id);
 
                 if (product is null)
                     throw new ProductNotFoundException(item.Id);
 
-                var productInOrderItem = new ProductInOrderItem(product.Id,product.Name,product.PictureUrl);
+                var productInOrderItem = new ProductInOrderItem(product.Id, product.Name, product.PictureUrl);
 
                 var orderItem = new OrderItem(productInOrderItem, item.Quantity, product.Price);
 
                 orderItems.Add(orderItem);
-
-                // Delivery method
-                var deliveryMethod = await unitOfWork.GetRepository<DeliveryMethod, int>().GetAsync(orderRequest.DeliveryMethodId);
-
-                if (deliveryMethod is null)
-                    throw new DeliveryMethodNotFoundException(orderRequest.DeliveryMethodId);
-
-                // Subtotal
-                var subtotal = orderItems.Sum(item => item.Price * item.Quantity);
-
-                var order = new Order(buyerEmail, address, orderItems, deliveryMethod, subtotal);
-
-                await unitOfWork.GetRepository<Order, Guid>().AddAsync(order);
-
-                await unitOfWork.SaveChangesAsync();
-
-                return mapper.Map<OrderResult>(order);
             }
+
+            // Delivery method
+            var deliveryMethod = await unitOfWork.GetRepository<DeliveryMethod, int>().GetAsync(orderRequest.DeliveryMethodId);
+
+            if (deliveryMethod is null)
+                throw new DeliveryMethodNotFoundException(orderRequest.DeliveryMethodId);
+
+            // Subtotal
+            var subtotal = orderItems.Sum(item => item.Price * item.Quantity);
+
+            var order = new Order(buyerEmail, address, orderItems, deliveryMethod, subtotal);
+
+            await orderRepo.AddAsync(order);
+
+            await unitOfWork.SaveChangesAsync();
+
+            return mapper.Map<OrderResult>(order);
         }
 
         public async Task<IEnumerable<DeliveryMethodResult>> GetDeliveryMethodsAsync()
@@ -79,7 +90,7 @@ namespace Services
         {
             var orderSpec = new OrderWithIncludeSpecification(email);
             var orders = await unitOfWork.GetRepository<Order, Guid>().GetAllAsync(orderSpec);
-
+            
             return mapper.Map<IEnumerable<OrderResult>>(orders);
         }
     }

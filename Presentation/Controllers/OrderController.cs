@@ -33,3 +33,4 @@ namespace Presentation.Controllers
         public async Task<ActionResult<IEnumerable<DeliveryMethodResult>>> GetDeliveryMethods()
         => Ok(await serviceManager.OrderService.GetDeliveryMethodsAsync());
     }
+}
