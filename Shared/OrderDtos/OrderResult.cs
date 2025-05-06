@@ -11,5 +11,6 @@
         public int? DeliveryMethodId { get; set; }
         public DateTimeOffset OrderDate { get; set; }
         public decimal Subtotal { get; set; }
+        public decimal Total { get; set; }
     }
 }
