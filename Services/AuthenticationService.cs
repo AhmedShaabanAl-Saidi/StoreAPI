@@ -16,7 +16,7 @@ namespace Services
     public class AuthenticationService(UserManager<User> userManager, IMapper mapper,IOptions<JwtOptions> options)
         : IAuthenticationService
     {
-        public async Task<AddressDto> GetUserAddressAsync(string email)
+        public async Task<IdentityAddressDto> GetUserAddressAsync(string email)
         {
             var user = await userManager.Users
                 .Include(u => u.Address)
@@ -25,7 +25,7 @@ namespace Services
             if (user is null)
                 throw new UserNotFoundException(email);
 
-            return mapper.Map<AddressDto>(user.Address);
+            return mapper.Map<IdentityAddressDto>(user.Address);
         }
 
         public async Task<UserResultDto> GetUserByEmailAsync(string email)
@@ -96,7 +96,7 @@ namespace Services
             );
         }
 
-        public async Task<AddressDto> UpdateUserAddressAsync(string email, AddressDto addressDto)
+        public async Task<IdentityAddressDto> UpdateUserAddressAsync(string email, IdentityAddressDto addressDto)
         {
             var user = await userManager.Users.Include(u => u.Address)
                 .FirstOrDefaultAsync(u => u.Email == email);

@@ -1,6 +1,6 @@
 ﻿namespace Shared.IdentityDtos
 {
-    public class AddressDto
+    public class IdentityAddressDto
     {
         public string FristName { get; set; }
         public string LastName { get; set; }
